@@ -1,22 +1,37 @@
 package ie.atu.cicdweek5;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class ProductController {
+    private ProductService myProduct;
+
+    public ProductController(ProductService myProduct) {
+        this.myProduct = myProduct;
+    }
+
     private List<ProductApp> myList = new ArrayList<>();
     @PostMapping("/newProduct")
-    public List<ProductApp> newProduct(@RequestBody ProductApp product)
+    public List<ProductApp> newProduct(@Valid @RequestBody ProductApp product)
     {
-        ProductService  myProduct = new ProductService();
-        myList = myProduct.addProduct(product);
-        //business logic to add this to a database
-        // return list of all products from the database
-        return myList;
+        return myProduct.addProduct(product);
     }
+    @PutMapping("{id}")
+    public List<ProductApp> updateProduct(@PathVariable int id, @RequestBody ProductApp product)
+    {
+        return myProduct.putProduct(id, product);
+    }
+
+    @DeleteMapping("deleteProducts/{id}")
+    public List<ProductApp> deleteProduct(@PathVariable int id)
+    {
+        return myProduct.deleteProduct(id);
+    }
+
 }
